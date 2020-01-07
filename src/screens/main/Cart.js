@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {
-  TextInput,
   Button,
   Surface,
   Card,
   Text,
   Title,
   Paragraph,
-  Avatar,
 } from 'react-native-paper';
-import url from '../../modules/lib/url';
-import axios from 'axios';
-import BackdropLoading from './../components/BackdropLoading';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -26,7 +21,6 @@ class Cart extends Component {
     errors: null,
   };
   render() {
-    console.log(this.props.carts);
     return (
       <ScrollView>
         <Surface style={styles.mainContainer}>
@@ -37,10 +31,13 @@ class Cart extends Component {
                 <Card style={styles.Card} key={key}>
                   <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
                   <Card.Content>
-                    <Title>{item.name}</Title>
-                    <Paragraph>{item.description}</Paragraph>
+                    <Title style={styles.cardName}>{item.name}</Title>
+                    <Paragraph style={styles.cardPrice}>
+                      Rp{'. '}
+                      {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g,'$1,')}
+                    </Paragraph>
                   </Card.Content>
-                  <Card.Actions>
+                  <Card.Actions style={{justifyContent: "center"}}>
                     <Button onPress={() => this.props.removeFromCart(item.id)}>
                       Remove from cart
                     </Button>
@@ -49,7 +46,7 @@ class Cart extends Component {
               );
             })
           ) : (
-            <Text>Anda belum membeli apapun</Text>
+            <Text style={{textAlign: "center"}}>Anda belum membeli apapun</Text>
           )}
         </Surface>
       </ScrollView>
@@ -74,6 +71,15 @@ const styles = StyleSheet.create({
   },
   Card: {
     marginVertical: 10,
+  },
+  cardName: {
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  cardPrice: {
+    marginTop: 12,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 
