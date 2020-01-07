@@ -3,20 +3,10 @@ import React, {Component} from 'react';
 //Nav Imports
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {
-  createDrawerNavigator,
-  DrawerNavigatorItems,
-  DrawerActions,
-} from 'react-navigation-drawer';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 
 // Native Components Import
-import {View, SafeAreaView, Text, TouchableOpacity} from 'react-native';
 import {IconButton, Title} from 'react-native-paper';
-
-//Redux Import
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
 
 // Page Import
 import Signup from './auth/Signup';
@@ -24,9 +14,8 @@ import Login from './auth/Login';
 import Logout from './auth/Logout';
 import Home from './main/Home';
 import Cart from './main/Cart';
-import Support from './main/Support';
-// import Detail from './main/Detail';
-// import Account from './main/Account';
+import Wishlist from './main/Wishlist';
+import Checkout from './main/Checkout';
 
 const AuthStack = createStackNavigator(
   {
@@ -66,7 +55,21 @@ const HomeStack = createStackNavigator(
         },
       }),
     },
-    Cart: {screen: Cart},
+    Cart: {
+      screen: Cart,
+      navigationOptions: ({navigation}) => ({
+        headerRight: () => {
+          return (
+            <IconButton
+              icon="cube-send"
+              mode="text"
+              onPress={() => navigation.navigate('Checkout')}
+            />
+          );
+        },
+      }),
+    },
+    Checkout: {screen: Checkout},
     // Detail: {
     //   screen: Detail,
     //   navigationOptions: ({theme}) => ({
@@ -81,6 +84,15 @@ const HomeStack = createStackNavigator(
   },
 );
 
+const WishlistStack = createStackNavigator({
+  Wishlist: {
+    screen: Wishlist,
+    navigationOptions: {
+      header: null,
+    },
+  },
+});
+
 const bottomTab = createMaterialBottomTabNavigator(
   {
     Home: {
@@ -89,10 +101,10 @@ const bottomTab = createMaterialBottomTabNavigator(
         tabBarIcon: <IconButton icon="home" size={15} />,
       },
     },
-    Support: {
-      screen: Support,
+    Wishlist: {
+      screen: WishlistStack,
       navigationOptions: {
-        tabBarIcon: <IconButton icon="help" size={15} />,
+        tabBarIcon: <IconButton icon="bookmark-multiple" size={15} />,
       },
     },
     Logout: {
