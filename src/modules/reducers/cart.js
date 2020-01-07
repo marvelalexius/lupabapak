@@ -19,12 +19,12 @@ export default (state = initialState, action) => {
     case PRODUCT_REMOVED:
       // const globalState = store.getState();
       let filtered_carts = state.carts.filter(cart => {
-        if (cart.id !== action.product_id) {
+        if (cart.id !== action.product) {
           return cart;
         }
       });
 
-      console.log(filtered_carts);
+      // console.log(filtered_carts);
       return {
         ...state,
         carts: filtered_carts,
@@ -45,11 +45,10 @@ export const removeFromCart = product => {
 };
 
 export const addToCart = product_id => {
-  console.log(product_id);
   return dispatch => {
     dispatch({
       type: PRODUCT_ADDED,
-      product_id: product_id,
+      product: product_id,
     });
   };
 };
