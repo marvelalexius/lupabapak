@@ -1,24 +1,19 @@
 import React, {Component} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
 import {
-  TextInput,
   Button,
   Surface,
   Card,
   Text,
   Title,
   Paragraph,
-  Avatar,
 } from 'react-native-paper';
-import url from '../../modules/lib/url';
-import axios from 'axios';
-import BackdropLoading from './../components/BackdropLoading';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {removeFromCart} from './../../modules/reducers/cart';
+import {removeFromWishlist} from './../../modules/reducers/wishlist';
 
-class Cart extends Component {
+class Wishlist extends Component {
   state = {
     email: 'marvel@alexius.com',
     password: 'adminadmin',
@@ -26,30 +21,35 @@ class Cart extends Component {
     errors: null,
   };
   render() {
-    console.log(this.props.carts);
     return (
       <ScrollView>
         <Surface style={styles.mainContainer}>
-          <Text style={styles.title}>Your cart</Text>
-          {this.props.carts.length > 0 ? (
-            this.props.carts.map((item, key) => {
+          <Text style={styles.title}>Your wishlist</Text>
+          {this.props.wishlists.length > 0 ? (
+            this.props.wishlists.map((item, key) => {
               return (
                 <Card style={styles.Card} key={key}>
                   <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
                   <Card.Content>
-                    <Title>{item.name}</Title>
+                    <Title style={{marginTop: 12}}>{item.name}</Title>
                     <Paragraph>{item.description}</Paragraph>
+                    <Paragraph style={styles.cardPrice}>
+                      Rp{'. '}
+                      {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
+                    </Paragraph>
                   </Card.Content>
-                  <Card.Actions>
-                    <Button onPress={() => this.props.removeFromCart(item.id)}>
-                      Remove from cart
+                  <Card.Actions style={{justifyContent: "center"}}>
+                    <Button onPress={() => this.props.removeFromWishlist(item.id)}>
+                      Remove from wishlist
                     </Button>
                   </Card.Actions>
                 </Card>
               );
             })
           ) : (
-            <Text>Anda belum membeli apapun</Text>
+            <Text style={{textAlign: 'center'}}>
+              Tambahkan Barang Impian Anda
+            </Text>
           )}
         </Surface>
       </ScrollView>
@@ -75,19 +75,24 @@ const styles = StyleSheet.create({
   Card: {
     marginVertical: 10,
   },
+  cardPrice: {
+    marginTop: 12,
+    textAlign: 'right',
+    fontWeight: 'bold',
+  },
 });
 
 const mapStateToProps = state => ({
   user: state.user.user,
   isLogin: state.user.isLogin,
   token: state.user.token,
-  carts: state.cart.carts,
+  wishlists: state.wishlist.wishlists,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      removeFromCart,
+      removeFromWishlist,
     },
     dispatch,
   );
@@ -95,4 +100,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Cart);
+)(Wishlist);
