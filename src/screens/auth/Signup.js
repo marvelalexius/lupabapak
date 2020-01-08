@@ -6,10 +6,11 @@ import axios from 'axios';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {userLoggedIn} from './../../modules/reducers';
+import {userLoggedIn} from './../../modules/reducers/user';
 
 class Signup extends Component {
   state = {
+    name: '',
     email: '',
     password: '',
     password_confirm: '',
@@ -23,7 +24,8 @@ class Signup extends Component {
 
   handleSubmit = () => {
     this.setState({isLoading: true});
-    const {email, password, password_confirm} = this.state;
+    const {name, email, password, password_confirm} = this.state;
+    const url_request = `${url}/api/auth/signup`;
 
     if (password !== password_confirm) {
       this.setState({isLoading: false});
@@ -38,17 +40,21 @@ class Signup extends Component {
 
     let data = new FormData();
 
+    data.append('name', name);
     data.append('email', email);
     data.append('password', password);
     data.append('password_confirmation', password_confirm);
 
     axios
-      .post(url, data, config)
+      .post(url_request, data, config)
       .then(res => {
-        console.log(res);
+        const token = res.data.access_token;
+        const user = res.data.user;
+        this.props.userLoggedIn(user, token);
+        this.props.navigation.navigate('Home');
       })
       .catch(err => {
-        console.log(err.response.data.errors);
+        console.log(err);
       });
   };
 
@@ -64,6 +70,12 @@ class Signup extends Component {
     return (
       <Surface style={styles.mainContainer}>
         <Text style={styles.title}>Signup</Text>
+        <TextInput
+          label="Username"
+          onChangeText={this.handleChangeInput('name')}
+          value={this.state.name}
+          style={styles.formControl}
+        />
         <TextInput
           label="Email"
           onChangeText={this.handleChangeInput('email')}
