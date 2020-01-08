@@ -1,17 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, ScrollView} from 'react-native';
-import {
-  TextInput,
-  Button,
-  Surface,
-  Card,
-  Text,
-  Title,
-  Paragraph,
-  Avatar,
-} from 'react-native-paper';
-import url from '../../modules/lib/url';
-import axios from 'axios';
+import {Surface, Text} from 'react-native-paper';
 
 import ProductCard from './ProductCard';
 

@@ -1,55 +1,55 @@
 import React, {Component} from 'react';
-import {StyleSheet, ScrollView, Alert} from 'react-native';
-import {
-  TextInput,
-  Button,
-  Surface,
-  Card,
-  Text,
-  Title,
-  Paragraph,
-  Avatar,
-} from 'react-native-paper';
+import {StyleSheet, Alert} from 'react-native';
+import {Button, Card, Title, Paragraph} from 'react-native-paper';
 import url from '../../modules/lib/url';
 import axios from 'axios';
-import BackdropLoading from './../components/BackdropLoading';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {addToCart} from './../../modules/reducers/cart';
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from './../../modules/reducers/wishlist';
 
 class ProductCard extends Component {
   render() {
     return (
-      <Card style={styles.Card}>
+      <Card style={styles.card}>
         <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
         <Card.Content>
-          <Title>{this.props.product.name}</Title>
+          <Title style={{marginTop: 12}}>{this.props.product.name}</Title>
           <Paragraph>{this.props.product.description}</Paragraph>
+          <Paragraph style={styles.cardPrice}>
+            Rp{'. '}
+            {this.props.product.price.replace(
+              /(\d)(?=(\d\d\d)+(?!\d))/g,
+              '$1,',
+            )}
+          </Paragraph>
         </Card.Content>
-        <Card.Actions>
+        <Card.Actions style={styles.cardAction}>
           <Button onPress={() => this._buyNow(this.props.product)}>
             Buy Now
           </Button>
           <Button onPress={() => this._addToCart(this.props.product)}>
             Add To Cart
           </Button>
-          <Button onPress={() => this._addToWishlist(this.props.product)}>
-            Add To Wishlist
-          </Button>
+          <Button
+            icon="bookmark-plus-outline"
+            onPress={() => this._addToWishlist(this.props.product)}
+          />
         </Card.Actions>
       </Card>
     );
   }
 
   _addToCart(product) {
-    let carts = [];
     let cart = {
       ...product,
       quantity: 1,
     };
-    carts.push(cart);
-    this.props.addToCart(carts);
+    this.props.addToCart(cart);
   }
 
   _buyNow(product) {
@@ -83,30 +83,33 @@ class ProductCard extends Component {
   }
 
   _addToWishlist(product) {
-    let {token, user} = this.props;
-    const Url = `${url}/api/wishlist`;
-    console.log(Url);
-
-    let config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
+    //   let {token, user} = this.props;
+    //   const Url = `${url}/api/wishlist`;
+    //   console.log(Url);
+    //   let config = {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: 'Bearer ' + token,
+    //     },
+    //   };
+    //   let data = {
+    //     user_id: user.id,
+    //     product_id: product.id,
+    //   };
+    //   axios
+    //     .post(Url, data, config)
+    //     .then(res => {
+    //       Alert.alert(res.data.message);
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // }
+    let wishlist = {
+      ...product,
+      quantity: 1,
     };
-
-    let data = {
-      user_id: user.id,
-      product_id: product.id,
-    };
-
-    axios
-      .post(Url, data, config)
-      .then(res => {
-        Alert.alert(res.data.message);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.props.addToWishlist(wishlist);
   }
 }
 
@@ -125,8 +128,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
   },
-  Card: {
+  card: {
     marginVertical: 10,
+  },
+  cardAction: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cardPrice: {
+    marginTop: 12,
+    textAlign: 'right',
+    fontWeight: 'bold',
   },
 });
 
@@ -134,12 +146,15 @@ const mapStateToProps = state => ({
   user: state.user.user,
   isLogin: state.user.isLogin,
   token: state.user.token,
+  wishlists: state.wishlist.wishlists,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       addToCart,
+      addToWishlist,
+      removeFromWishlist,
     },
     dispatch,
   );
