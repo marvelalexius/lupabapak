@@ -23,9 +23,15 @@ class Home extends Component {
     return (
       <ScrollView>
         <Surface style={styles.mainContainer}>
-          <Text style={styles.title}>Welcome back, {this.props.user.name}</Text>
+          <Text style={styles.title}>LupaBapak</Text>
           {this.props.products.map((item, key) => {
-            return <ProductCard product={item} key={key} />;
+            return (
+              <ProductCard
+                product={item}
+                key={key}
+                navigation={this.props.navigation}
+              />
+            );
           })}
         </Surface>
       </ScrollView>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {ActivityIndicator} from 'react-native-paper';
+import {StyleSheet} from "react-native";
+import {ActivityIndicator, Surface} from 'react-native-paper';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -32,9 +33,21 @@ class Logout extends Component {
     });
   };
   render() {
-    return <ActivityIndicator animating={true} />;
+    return (
+      <Surface style={styles.container}>
+        <ActivityIndicator animating={true} />
+      </Surface>
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 const mapStateToProps = state => ({
   user: state.user.user,

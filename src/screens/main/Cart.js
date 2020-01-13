@@ -9,6 +9,7 @@ import {
   Paragraph,
 } from 'react-native-paper';
 
+import url from '../../modules/lib/url';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {removeFromCart} from './../../modules/reducers/cart';
@@ -29,15 +30,15 @@ class Cart extends Component {
             this.props.carts.map((item, key) => {
               return (
                 <Card style={styles.Card} key={key}>
-                  <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
+                  <Card.Cover source={{uri: `${url}/storage/${item.image}`}} />
                   <Card.Content>
                     <Title style={styles.cardName}>{item.name}</Title>
                     <Paragraph style={styles.cardPrice}>
                       Rp{'. '}
-                      {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g,'$1,')}
+                      {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
                     </Paragraph>
                   </Card.Content>
-                  <Card.Actions style={{justifyContent: "center"}}>
+                  <Card.Actions style={{justifyContent: 'center'}}>
                     <Button onPress={() => this.props.removeFromCart(item.id)}>
                       Remove from cart
                     </Button>
@@ -46,7 +47,7 @@ class Cart extends Component {
               );
             })
           ) : (
-            <Text style={{textAlign: "center"}}>Anda belum membeli apapun</Text>
+            <Text style={{textAlign: 'center'}}>Anda belum membeli apapun</Text>
           )}
         </Surface>
       </ScrollView>

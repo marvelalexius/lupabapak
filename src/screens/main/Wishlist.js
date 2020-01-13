@@ -9,17 +9,15 @@ import {
   Paragraph,
 } from 'react-native-paper';
 
+import url from '../../modules/lib/url';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {removeFromWishlist} from './../../modules/reducers/wishlist';
+import {wishlistRequest} from '../../modules/reducers/wishlist';
 
 class Wishlist extends Component {
-  state = {
-    email: 'marvel@alexius.com',
-    password: 'adminadmin',
-    isLoading: false,
-    errors: null,
-  };
+  componentDidMount() {
+    this.props.wishlistRequest(this.props.user.id);
+  }
   render() {
     return (
       <ScrollView>
@@ -29,7 +27,11 @@ class Wishlist extends Component {
             this.props.wishlists.map((item, key) => {
               return (
                 <Card style={styles.Card} key={key}>
-                  <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
+                  <Card.Cover
+                    source={{
+                      uri: `${url}/storage/${this.props.wishlist.image}`,
+                    }}
+                  />
                   <Card.Content>
                     <Title style={{marginTop: 12}}>{item.name}</Title>
                     <Paragraph>{item.description}</Paragraph>
@@ -38,8 +40,9 @@ class Wishlist extends Component {
                       {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
                     </Paragraph>
                   </Card.Content>
-                  <Card.Actions style={{justifyContent: "center"}}>
-                    <Button onPress={() => this.props.removeFromWishlist(item.id)}>
+                  <Card.Actions style={{justifyContent: 'center'}}>
+                    <Button
+                      onPress={() => this.props.removeFromWishlist(item.id)}>
                       Remove from wishlist
                     </Button>
                   </Card.Actions>
@@ -92,7 +95,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      removeFromWishlist,
+      wishlistRequest,
     },
     dispatch,
   );

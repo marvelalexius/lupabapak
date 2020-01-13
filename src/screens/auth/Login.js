@@ -10,8 +10,8 @@ import {userLoggedIn} from '../../modules/reducers/user';
 
 class Login extends Component {
   state = {
-    email: 'marvel@alexius.com',
-    password: 'adminadmin',
+    email: '',
+    password: '',
     isLoading: false,
     errors: null,
   };

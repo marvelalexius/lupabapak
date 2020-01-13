@@ -16,6 +16,7 @@ import Home from './main/Home';
 import Cart from './main/Cart';
 import Wishlist from './main/Wishlist';
 import Checkout from './main/Checkout';
+import WebViewScreen from './main/WebViewScreen';
 
 const AuthStack = createStackNavigator(
   {
@@ -70,13 +71,7 @@ const HomeStack = createStackNavigator(
       }),
     },
     Checkout: {screen: Checkout},
-    // Detail: {
-    //   screen: Detail,
-    //   navigationOptions: ({theme}) => ({
-    //     title: 'News',
-    //     headerTintColor: theme === 'dark' ? '#ffffff' : '#000000',
-    //   }),
-    // },
+    WebViewScreen: {screen: WebViewScreen},
   },
   {
     headerMode: 'float',
@@ -87,6 +82,15 @@ const HomeStack = createStackNavigator(
 const WishlistStack = createStackNavigator({
   Wishlist: {
     screen: Wishlist,
+    navigationOptions: {
+      header: null,
+    },
+  },
+});
+
+const WebViewStack = createStackNavigator({
+  WebView: {
+    screen: WebViewScreen,
     navigationOptions: {
       header: null,
     },
