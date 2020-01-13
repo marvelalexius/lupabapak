@@ -16,7 +16,9 @@ class ProductCard extends Component {
   render() {
     return (
       <Card style={styles.card}>
-        <Card.Cover source={{uri: 'https://picsum.photos/700'}} />
+        <Card.Cover
+          source={{uri: `${url}/storage/${this.props.product.image}`}}
+        />
         <Card.Content>
           <Title style={{marginTop: 12}}>{this.props.product.name}</Title>
           <Paragraph>{this.props.product.description}</Paragraph>
@@ -53,6 +55,10 @@ class ProductCard extends Component {
   }
 
   _buyNow(product) {
+    // this.props.navigation.navigate('WebViewScreen', {
+    //   uri: `${url}/api/payment/transaction/9B6Eg`,
+    // });
+
     let carts = [];
     let cart = {
       ...product,
@@ -75,7 +81,9 @@ class ProductCard extends Component {
     axios
       .post(Url, carts, config)
       .then(res => {
-        Alert.alert(res.data.message);
+        this.props.navigation.navigate('WebViewScreen', {
+          uri: `${url}/api/payment/transaction/${res.data.data}`,
+        });
       })
       .catch(err => {
         console.log(err);
@@ -83,33 +91,23 @@ class ProductCard extends Component {
   }
 
   _addToWishlist(product) {
-    //   let {token, user} = this.props;
-    //   const Url = `${url}/api/wishlist`;
-    //   console.log(Url);
-    //   let config = {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: 'Bearer ' + token,
-    //     },
-    //   };
-    //   let data = {
-    //     user_id: user.id,
-    //     product_id: product.id,
-    //   };
-    //   axios
-    //     .post(Url, data, config)
-    //     .then(res => {
-    //       Alert.alert(res.data.message);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // }
-    let wishlist = {
-      ...product,
-      quantity: 1,
+    let {token} = this.props;
+    const Url = `${url}/api/wishlist`;
+    let config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
     };
-    this.props.addToWishlist(wishlist);
+    let data = [product];
+    axios
+      .post(Url, data, config)
+      .then(res => {
+        Alert.alert(res.data.message);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 

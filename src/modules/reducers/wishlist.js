@@ -1,33 +1,30 @@
+import axios from 'axios';
+import url from '../lib/url';
+
 // Constants
-export const WISHLIST_ADDED = 'wishlist/WISHLIST_ADDED';
-export const WISHLIST_REMOVED = 'wishlist/WISHLIST_REMOVED';
+export const WISHLISTS_REQUESTED = 'wishlist/WISHLISTS_REQUESTED';
+export const WISHLISTS_LOADED = 'wishlist/WISHLISTS';
 
 const initialState = {
   wishlists: [],
-  isRequestingProducts: false,
+  isRequestingWishlists: false,
 };
 
 // Reducers
 export default (state = initialState, action) => {
   switch (action.type) {
-    case WISHLIST_ADDED:
+    case WISHLISTS_REQUESTED:
       // const globalState = store.getState();
       return {
         ...state,
-        wishlists: [...state.wishlists, action.product],
+        isRequestingWishlists: true,
       };
-    case WISHLIST_REMOVED:
+    case WISHLISTS_LOADED:
       // const globalState = store.getState();
-      let filtered_wishlists = state.wishlists.filter(wishlist => {
-        if (wishlist.id !== action.product) {
-          return wishlist;
-        }
-      });
-
-      // console.log(filtered_wishlists);
       return {
         ...state,
-        wishlists: filtered_wishlists,
+        wishlists: action.wishlists,
+        isRequestingWishlists: false,
       };
     default:
       return state;
@@ -35,20 +32,20 @@ export default (state = initialState, action) => {
 };
 
 // Actions
-export const removeFromWishlist = product_id => {
+export const wishlistRequest = user_id => {
   return dispatch => {
     dispatch({
-      type: WISHLIST_REMOVED,
-      product: product_id,
+      type: WISHLISTS_REQUESTED,
     });
-  };
-};
 
-export const addToWishlist = product_id => {
-  return dispatch => {
-    dispatch({
-      type: WISHLIST_ADDED,
-      product: product_id,
+    console.log(user_id);
+
+    const Url = `${url}/api/wishlist?user_id=${user_id}`;
+    axios.get(Url).then(res => {
+      return dispatch({
+        type: WISHLISTS_LOADED,
+        wishlists: res.data.data,
+      });
     });
   };
 };
