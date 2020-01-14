@@ -10,15 +10,10 @@ import {productRequest} from '../../modules/reducers/product';
 import {addToCart} from './../../modules/reducers/cart';
 
 class Home extends Component {
-  state = {
-    email: 'marvel@alexius.com',
-    password: 'adminadmin',
-    isLoading: false,
-    errors: null,
-  };
   componentDidMount() {
     this.props.productRequest();
   }
+
   render() {
     return (
       <ScrollView>

@@ -30,11 +30,6 @@ const AuthStack = createStackNavigator(
   },
 );
 
-function logout(props) {
-  console.log(props);
-  props.navigation.navigate('Login');
-}
-
 const HomeStack = createStackNavigator(
   {
     Home: {
@@ -82,15 +77,6 @@ const HomeStack = createStackNavigator(
 const WishlistStack = createStackNavigator({
   Wishlist: {
     screen: Wishlist,
-    navigationOptions: {
-      header: null,
-    },
-  },
-});
-
-const WebViewStack = createStackNavigator({
-  WebView: {
-    screen: WebViewScreen,
     navigationOptions: {
       header: null,
     },

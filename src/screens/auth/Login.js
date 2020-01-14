@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Alert} from 'react-native';
-import {TextInput, Button, Surface, withTheme, Text} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import {TextInput, Button, Surface, Text} from 'react-native-paper';
 import url from '../../modules/lib/url';
 import axios from 'axios';
 
@@ -17,93 +23,102 @@ class Login extends Component {
   };
 
   handleChangeInput = field => text => {
-    this.setState({[field]: text});
+    let trimmedText = text.toString().trim();
+    this.setState({[field]: trimmedText});
   };
 
   handleSubmit = async () => {
-    this.setState({isLoading: true});
-    const {email, password} = this.state;
-    const Url = `${url}/api/auth/login`;
-    console.log(Url);
-    let config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+    if (this.state.email === '' || this.state.password === '') {
+      Alert.alert('Empty Field!', 'Please fill the field correctly!');
+    } else {
+      this.setState({isLoading: true});
+      const {email, password} = this.state;
+      const Url = `${url}/api/auth/login`;
+      let config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
 
-    let data = new FormData();
+      let data = new FormData();
 
-    data.append('email', email);
-    data.append('password', password);
+      data.append('email', email);
+      data.append('password', password);
 
-    axios
-      .post(Url, data, config)
-      .then(res => {
-        const token = res.data.access_token;
-        const user = res.data.user;
-        this.props.userLoggedIn(user, token);
-        this.props.navigation.navigate('Home');
-      })
-      .catch(err => {
-        this.setState({isLoading: false});
-        console.log(err);
-      });
-  };
+      axios
+        .post(Url, data, config)
+        .then(res => {
+          const token = res.data.access_token;
+          const user = res.data.user;
+          this.props.userLoggedIn(user, token);
+          this.props.navigation.navigate('Home');
+        })
+        .catch(error => {
+          this.setState({isLoading: false});
 
-  handleErrors = error => {
-    this.setState({
-      isLoading: false,
-    });
-
-    Alert.alert('Error: ', error.code);
+          // bad implementation but okay for now
+          if (error.toString().includes('401')) {
+            Alert.alert('Error!', 'Email or password wrong');
+          } else if (error.toString().includes('422')) {
+            Alert.alert('Invalid Data!', 'Please recheck your data!');
+          } else {
+            Alert.alert(
+              'Error!',
+              'Something went wrong, if happens continously please contact developer!',
+            );
+          }
+        });
+    }
   };
 
   render() {
     return (
-      <Surface style={styles.mainContainer}>
-        <Text style={styles.title}>Login</Text>
-        <TextInput
-          label="Email"
-          onChangeText={this.handleChangeInput('email')}
-          value={this.state.email}
-          style={styles.formControl}
-        />
-        <TextInput
-          label="Password"
-          onChangeText={this.handleChangeInput('password')}
-          secureTextEntry={true}
-          value={this.state.password}
-          style={styles.formControl}
-        />
-        {this.state.isLoading ? (
-          <Button
-            loading="true"
-            mode="contained"
-            labelStyle={styles.buttonText}
-            onPress={this.handleSubmit}
-            style={styles.buttonControl}>
-            Sign In
-          </Button>
-        ) : (
-          <Button
-            onPress={this.handleSubmit}
-            // onPress={() => this.props.navigation.navigate('Home')}
-            mode="contained"
-            labelStyle={styles.buttonText}
-            style={styles.buttonControl}>
-            Sign In
-          </Button>
-        )}
-        <View style={styles.loginContainer}>
-          <Text>Don't have account? </Text>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('Signup');
-            }}>
-            <Text style={{color: '#3498db'}}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </Surface>
+      <ScrollView>
+        <Surface style={styles.mainContainer}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+            label="Email"
+            onChangeText={this.handleChangeInput('email')}
+            value={this.state.email}
+            style={styles.formControl}
+          />
+          <TextInput
+            label="Password"
+            onChangeText={this.handleChangeInput('password')}
+            secureTextEntry={true}
+            value={this.state.password}
+            style={styles.formControl}
+          />
+          {this.state.isLoading ? (
+            <Button
+              loading="true"
+              mode="contained"
+              labelStyle={styles.buttonText}
+              onPress={this.handleSubmit}
+              style={styles.buttonControl}>
+              Sign In
+            </Button>
+          ) : (
+            <Button
+              onPress={this.handleSubmit}
+              // onPress={() => this.props.navigation.navigate('Home')}
+              mode="contained"
+              labelStyle={styles.buttonText}
+              style={styles.buttonControl}>
+              Sign In
+            </Button>
+          )}
+          <View style={styles.loginContainer}>
+            <Text>Don't have account? </Text>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('Signup');
+              }}>
+              <Text style={{color: '#3498db'}}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </Surface>
+      </ScrollView>
     );
   }
 }

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView, View} from 'react-native';
 import {
   Button,
   Surface,
@@ -7,29 +7,41 @@ import {
   Text,
   Title,
   Paragraph,
+  ActivityIndicator,
 } from 'react-native-paper';
 
+import axios from 'axios';
 import url from '../../modules/lib/url';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {wishlistRequest} from '../../modules/reducers/wishlist';
 
 class Wishlist extends Component {
+  state = {
+    wishlists: [],
+    isLoading: true,
+  };
+
   componentDidMount() {
-    this.props.wishlistRequest(this.props.user.id);
+    this._getWishlist();
   }
+
   render() {
     return (
       <ScrollView>
         <Surface style={styles.mainContainer}>
+          {this.state.isLoading ? (
+            <View>
+              <ActivityIndicator animating={true} />
+            </View>
+          ) : null}
           <Text style={styles.title}>Your wishlist</Text>
-          {this.props.wishlists.length > 0 ? (
-            this.props.wishlists.map((item, key) => {
+          {this.state.wishlists.length > 0 ? (
+            this.state.wishlists.map((item, key) => {
               return (
                 <Card style={styles.Card} key={key}>
                   <Card.Cover
                     source={{
-                      uri: `${url}/storage/${this.props.wishlist.image}`,
+                      uri: `${url}/storage/${item.image}`,
                     }}
                   />
                   <Card.Content>
@@ -40,12 +52,6 @@ class Wishlist extends Component {
                       {item.price.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')}
                     </Paragraph>
                   </Card.Content>
-                  <Card.Actions style={{justifyContent: 'center'}}>
-                    <Button
-                      onPress={() => this.props.removeFromWishlist(item.id)}>
-                      Remove from wishlist
-                    </Button>
-                  </Card.Actions>
                 </Card>
               );
             })
@@ -58,6 +64,20 @@ class Wishlist extends Component {
       </ScrollView>
     );
   }
+
+  _getWishlist = () => {
+    let config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + this.props.token,
+      },
+    };
+
+    const Url = `${url}/api/wishlist?user_id=${this.props.user.id}`;
+    axios.get(Url, config).then(res => {
+      this.setState({wishlists: res.data.data, isLoading: false});
+    });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -89,16 +109,9 @@ const mapStateToProps = state => ({
   user: state.user.user,
   isLogin: state.user.isLogin,
   token: state.user.token,
-  wishlists: state.wishlist.wishlists,
 });
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      wishlistRequest,
-    },
-    dispatch,
-  );
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
 export default connect(
   mapStateToProps,

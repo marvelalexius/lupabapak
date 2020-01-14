@@ -15,12 +15,6 @@ import {connect} from 'react-redux';
 import {removeFromCart} from './../../modules/reducers/cart';
 
 class Cart extends Component {
-  state = {
-    email: 'marvel@alexius.com',
-    password: 'adminadmin',
-    isLoading: false,
-    errors: null,
-  };
   render() {
     return (
       <ScrollView>
