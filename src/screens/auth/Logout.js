@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet} from "react-native";
+import {StyleSheet, Alert} from 'react-native';
 import {ActivityIndicator, Surface} from 'react-native-paper';
 
 import {bindActionCreators} from 'redux';
@@ -22,14 +22,21 @@ class Logout extends Component {
     let config = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     };
 
     axios.get(Url, config).then(res => {
       console.log(res.data.message);
       this.props.userLoggedOut();
-      this.props.navigation.navigate('Login');
+      Alert.alert('Success!', 'Successfully logout!', [
+        {
+          text: 'Ok!',
+          onPress: () => {
+            this.props.navigation.navigate('Login');
+          },
+        },
+      ]);
     });
   };
   render() {

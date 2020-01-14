@@ -7,10 +7,6 @@ import axios from 'axios';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {addToCart} from './../../modules/reducers/cart';
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from './../../modules/reducers/wishlist';
 
 class ProductCard extends Component {
   render() {
@@ -144,15 +140,12 @@ const mapStateToProps = state => ({
   user: state.user.user,
   isLogin: state.user.isLogin,
   token: state.user.token,
-  wishlists: state.wishlist.wishlists,
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       addToCart,
-      addToWishlist,
-      removeFromWishlist,
     },
     dispatch,
   );

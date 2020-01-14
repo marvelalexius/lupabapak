@@ -1,5 +1,6 @@
 import axios from 'axios';
 import url from '../lib/url';
+import store from '../stores';
 
 // Constants
 export const WISHLISTS_REQUESTED = 'wishlist/WISHLISTS_REQUESTED';
@@ -32,20 +33,30 @@ export default (state = initialState, action) => {
 };
 
 // Actions
-export const wishlistRequest = user_id => {
+export const wishlistRequest = (user_id, user_token) => {
   return dispatch => {
     dispatch({
       type: WISHLISTS_REQUESTED,
+      user_id,
+      user_token,
     });
 
-    console.log(user_id);
+    console.log(`${user_id} , ${user_token}`);
+    // console.log(`${url}/api/wishlist?user_id=${user.id}`);
 
-    const Url = `${url}/api/wishlist?user_id=${user_id}`;
-    axios.get(Url).then(res => {
-      return dispatch({
-        type: WISHLISTS_LOADED,
-        wishlists: res.data.data,
-      });
-    });
+    // let config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + user.token,
+    //   },
+    // };
+
+    // const Url = `${url}/api/wishlist?user_id=${user.id}`;
+    // axios.get(Url, config).then(res => {
+    //   return dispatch({
+    //     type: WISHLISTS_LOADED,
+    //     wishlists: res.data.data,
+    //   });
+    // });
   };
 };
